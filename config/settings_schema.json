@@ -57,16 +57,24 @@
     "name": "t:general.colors",
     "settings": [
       {
-        "type": "color",
-        "id": "background_color",
-        "default": "#FFFFFF",
-        "label": "t:labels.background"
+        "type": "color_palette",
+        "id": "color_palette",
+        "default": {
+          "background": "#FFFFFF",
+          "foreground": "#333333"
+        }
       },
       {
         "type": "color",
-        "id": "foreground_color",
-        "default": "#333333",
-        "label": "t:labels.foreground"
+        "id": "palette_primary_button_background",
+        "label": "t:labels.primary_button_background",
+        "default": "{{ settings.color_palette.foreground }}"
+      },
+      {
+        "type": "color",
+        "id": "palette_secondary_button_background",
+        "label": "t:labels.secondary_button_background",
+        "default": "{{ settings.color_palette.background }}"
       },
       {
         "type": "range",

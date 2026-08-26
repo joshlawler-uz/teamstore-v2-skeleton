@@ -6,13 +6,13 @@
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
   :root {
-    --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
-    --font-primary--style: {{ settings.type_primary_font.style }};
-    --font-primary--weight: {{ settings.type_primary_font.weight }};
+    --font-body: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
     --page-width: {{ settings.max_page_width }};
     --page-margin: {{ settings.min_page_margin }}px;
-    --color-background: {{ settings.background_color }};
-    --color-foreground: {{ settings.foreground_color }};
-    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+    --color-background: {{ settings.color_palette.background }};
+    --color-foreground: {{ settings.color_palette.foreground }};
+    --color-primary: {{ settings.palette_primary_button_background }};
+    --color-secondary: {{ settings.palette_secondary_button_background }};
+    --border-radius-inputs: {{ settings.input_corner_radius }}px;
   }
 {% endstyle %}

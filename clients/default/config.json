@@ -1,0 +1,15 @@
+{
+  "store": "josh-l-uz-test-store.myshopify.com",
+  "colors": {
+    "primary": "hotpink",
+    "secondary": "rebeccapurple",
+    "background": "whitesmoke",
+    "foreground": "black"
+  },
+  "fonts": {
+    "heading": "Georgia, serif",
+    "body": "system-ui, sans-serif"
+  },
+  "borderRadius": "8px",
+  "spacingBase": "1rem"
+}

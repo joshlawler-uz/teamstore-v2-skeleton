@@ -16,6 +16,9 @@ node_modules/
 snippets/vite-tag.liquid
 assets/.vite/
 
+# Composed per-client theme output (npm run compose / deploy)
+.dist/
+
 ## Release files
 release
 *.zip

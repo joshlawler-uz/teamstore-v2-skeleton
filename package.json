@@ -3,12 +3,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n vite,shopify -c cyan,magenta \"vite build --watch\" \"shopify theme dev\"",
-    "build": "vite build"
+    "tokens": "node scripts/generate-tokens.mjs",
+    "seed": "node scripts/seed-settings.mjs",
+    "compose": "node scripts/compose-theme.mjs",
+    "pull": "node scripts/pull-client.mjs",
+    "pull:settings": "node scripts/pull-settings-snapshot.mjs",
+    "dev": "node scripts/dev.mjs",
+    "build": "npm run tokens && vite build",
+    "deploy:preview": "npm run build && npm run compose && shopify theme push --path .dist/${CLIENT:-default} --unpublished",
+    "deploy:live": "npm run pull:settings && npm run build && npm run compose && shopify theme push --path .dist/${CLIENT:-default} --live"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "concurrently": "^10.0.5",
+    "inquirer": "^9.3.8",
     "tailwindcss": "^4.3.3",
     "vite": "^8.2.2",
     "vite-plugin-shopify": "^5.0.0"

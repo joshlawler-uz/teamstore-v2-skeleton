@@ -1,9 +1,6 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-    {% # Inlined CSS Variables %}
-    {% render 'css-variables' %}
-
     {% comment %}
       Font preloading:
       1. Preconnect to font CDN for faster connection
@@ -26,6 +23,9 @@
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
+
+    {% # Theme-setting overrides — loaded last so they win over the client's default tokens %}
+    {% render 'css-variables' %}
 
     {{ content_for_header }}
   </head>

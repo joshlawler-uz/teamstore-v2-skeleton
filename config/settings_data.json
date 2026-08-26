@@ -8,5 +8,12 @@
  * ------------------------------------------------------------
  */
 {
-  "current": {}
+  "current": {
+    "color_palette": {
+      "background": "whitesmoke",
+      "foreground": "black"
+    },
+    "palette_primary_button_background": "hotpink",
+    "palette_secondary_button_background": "rebeccapurple"
+  }
 }
