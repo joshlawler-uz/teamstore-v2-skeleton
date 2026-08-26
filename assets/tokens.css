@@ -1,0 +1,14 @@
+/*
+  Design tokens — obvious placeholders.
+  Swap these values later; Tailwind utilities read them via @theme.
+*/
+:root {
+  --color-primary: hotpink;
+  --color-secondary: rebeccapurple;
+  --color-background: whitesmoke;
+  --color-foreground: black;
+  --font-heading: Georgia, serif;
+  --font-body: system-ui, sans-serif;
+  --border-radius: 8px;
+  --spacing-base: 1rem;
+}

@@ -1,0 +1,25 @@
+@import "tailwindcss" source(none);
+
+@source "../../layout/**/*.liquid";
+@source "../../sections/**/*.liquid";
+@source "../../snippets/**/*.liquid";
+@source "../../blocks/**/*.liquid";
+@source "../../templates/**/*.liquid";
+@source not "../../assets";
+@source not "../../snippets/vite-tag.liquid";
+
+/*
+  Map design tokens from assets/tokens.css into Tailwind utilities.
+  @theme inline uses the CSS variables as-is (no re-declaration),
+  so `bg-primary`, `font-heading`, `rounded`, `p-base` etc. work.
+*/
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+  --radius: var(--border-radius);
+  --spacing-base: var(--spacing-base);
+}

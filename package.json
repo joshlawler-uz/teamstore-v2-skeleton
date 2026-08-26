@@ -1,0 +1,16 @@
+{
+  "name": "teamstore-v2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n vite,shopify -c cyan,magenta \"vite build --watch\" \"shopify theme dev\"",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "concurrently": "^10.0.5",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.2.2",
+    "vite-plugin-shopify": "^5.0.0"
+  }
+}
