@@ -8,6 +8,7 @@ export default defineConfig({
       themeRoot: './',
       sourceCodeDir: 'frontend',
       entrypointsDir: 'frontend/entrypoints',
+      versionNumbers: true,
     }),
     tailwindcss(),
   ],

@@ -10,6 +10,7 @@
     "pull:settings": "node scripts/pull-settings-snapshot.mjs",
     "dev": "node scripts/dev.mjs",
     "build": "npm run tokens && vite build",
+    "check": "shopify theme check",
     "deploy:preview": "npm run build && npm run compose && shopify theme push --path .dist/${CLIENT:-default} --unpublished",
     "deploy:live": "npm run pull:settings && npm run build && npm run compose && shopify theme push --path .dist/${CLIENT:-default} --live"
   },

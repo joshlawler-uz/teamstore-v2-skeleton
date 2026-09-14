@@ -19,5 +19,4 @@ package.json
 package-lock.json
 vite.config.js
 .github
-assets/.vite
-snippets/vite-tag.liquid
+assets/.vite/*
