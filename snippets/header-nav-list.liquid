@@ -1,0 +1,59 @@
+{% doc %}
+  Recursively renders one level of the header nav. Supports up to two levels
+  of nested flyout below the top-level bar (top-level -> sub-collection ->
+  sub-sub-collection), using the same `<nav-dropdown>` disclosure behavior at
+  every level (see frontend/entrypoints/header.js). Called by header-nav.liquid.
+
+  @param {object} links - the menu links to render at this level
+  @param {number} level - 1 for the top-level bar, 2+ for nested flyouts
+
+  @example
+  {% render 'header-nav-list', links: menu.links, level: 1 %}
+{% enddoc %}
+
+{% liquid
+  assign is_top = false
+  if level == 1
+    assign is_top = true
+  endif
+%}
+
+<ul role="list" class="{% if is_top %}flex items-center gap-base{% else %}flex min-w-40 flex-col py-2{% endif %}">
+  {% for link in links %}
+    <li>
+      {% if link.links.size > 0 and level < 3 %}
+        <nav-dropdown class="relative block">
+          <button
+            type="button"
+            data-dropdown-trigger
+            aria-expanded="false"
+            aria-controls="header-submenu-{{ level }}-{{ forloop.index }}-{{ link.handle }}"
+            class="flex w-full items-center gap-1 text-foreground [&_svg]:h-4 [&_svg]:w-4 hover:text-primary {% unless is_top %}justify-between px-base py-1 [&_svg]:-rotate-90{% endunless %}"
+          >
+            {{ link.title }}
+            {{ 'icon-chevron.svg' | inline_asset_content }}
+          </button>
+          <ul
+            id="header-submenu-{{ level }}-{{ forloop.index }}-{{ link.handle }}"
+            data-dropdown-panel
+            role="list"
+            hidden
+            class="absolute {% if is_top %}left-0 top-full{% else %}left-full top-0{% endif %} z-10 min-w-40 rounded border border-foreground/10 bg-background py-2 shadow-md"
+          >
+            {% render 'header-nav-list', links: link.links, level: level | plus: 1 %}
+          </ul>
+        </nav-dropdown>
+      {% else %}
+        <a
+          href="{{ link.url }}"
+          class="block text-foreground no-underline hover:text-primary {% unless is_top %}px-base py-1{% endunless %}"
+          {% if link.current %}
+            aria-current="page"
+          {% endif %}
+        >
+          {{ link.title }}
+        </a>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>

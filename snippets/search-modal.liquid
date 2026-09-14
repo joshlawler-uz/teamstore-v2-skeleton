@@ -1,0 +1,57 @@
+{% doc %}
+  Renders the header search trigger and its predictive search dialog.
+  Dialog open/close is handled by `<search-modal>`; debounced fetch + results
+  by `<predictive-search>` (see frontend/entrypoints/header.js). Results come
+  from sections/predictive-search.liquid, rendered on demand by Shopify's
+  Predictive Search API (GET /search/suggest?section_id=predictive-search).
+
+  @example
+  {% render 'search-modal' %}
+{% enddoc %}
+
+<search-modal>
+  <button
+    type="button"
+    data-dialog-open
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls="search-dialog"
+    class="flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6"
+  >
+    <span class="sr-only">{{ 'search.title' | t }}</span>
+    {{ 'icon-search.svg' | inline_asset_content }}
+  </button>
+
+  <dialog
+    id="search-dialog"
+    aria-label="{{ 'search.title' | t }}"
+    class="m-0 mt-0 w-full max-w-none border-0 bg-background p-0 [&::backdrop]:bg-foreground/50"
+  >
+    <predictive-search class="mx-auto flex max-w-2xl flex-col gap-base p-base">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="flex items-center gap-base">
+        <label for="header-search-input" class="sr-only">{{ 'search.placeholder' | t }}</label>
+        <input
+          id="header-search-input"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          role="combobox"
+          aria-expanded="false"
+          aria-owns="predictive-search-results"
+          aria-controls="predictive-search-results"
+          aria-haspopup="listbox"
+          aria-autocomplete="list"
+          autocomplete="off"
+          class="flex-1 border border-foreground/10 bg-background px-base py-2 text-foreground"
+        >
+        <button type="button" data-dialog-close class="flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6">
+          <span class="sr-only">{{ 'accessibility.close' | t }}</span>
+          {{ 'icon-close.svg' | inline_asset_content }}
+        </button>
+      </form>
+
+      <div data-predictive-search-results></div>
+    </predictive-search>
+  </dialog>
+</search-modal>

@@ -1,0 +1,13 @@
+{% doc %}
+  Renders the desktop header navigation. Supports up to two levels of nested
+  flyout dropdown below the top-level bar (see snippets/header-nav-list.liquid).
+
+  @param {object} menu - The menu to render
+
+  @example
+  {% render 'header-nav', menu: section.settings.menu %}
+{% enddoc %}
+
+<nav aria-label="{{ 'accessibility.header_navigation' | t }}" class="hidden md:block">
+  {% render 'header-nav-list', links: menu.links, level: 1 %}
+</nav>

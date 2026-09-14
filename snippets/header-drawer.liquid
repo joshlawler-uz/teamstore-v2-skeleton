@@ -1,0 +1,78 @@
+{% doc %}
+  Renders the mobile header hamburger trigger and its native <dialog> drawer.
+  Behavior lives in `<header-drawer>` (see frontend/entrypoints/header.js);
+  nested menu items use native <details> for the accordion, no JS required.
+
+  @param {object} menu - The menu to render inside the drawer
+
+  @example
+  {% render 'header-drawer', menu: section.settings.menu %}
+{% enddoc %}
+
+<header-drawer id="header-drawer" class="md:hidden">
+  <button
+    type="button"
+    data-dialog-open
+    aria-haspopup="dialog"
+    aria-expanded="false"
+    aria-controls="header-drawer-dialog"
+    class="flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6"
+  >
+    <span class="sr-only">{{ 'accessibility.menu' | t }}</span>
+    {{ 'icon-menu.svg' | inline_asset_content }}
+  </button>
+
+  <dialog
+    id="header-drawer-dialog"
+    aria-label="{{ 'accessibility.header_navigation' | t }}"
+    class="m-0 h-full w-full max-w-xs border-0 bg-background p-0 [&::backdrop]:bg-foreground/50"
+  >
+    <div class="flex items-center justify-between border-b border-foreground/10 p-base">
+      <span class="font-heading font-semibold text-foreground">{{ shop.name }}</span>
+      <button type="button" data-dialog-close class="flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6">
+        <span class="sr-only">{{ 'accessibility.close' | t }}</span>
+        {{ 'icon-close.svg' | inline_asset_content }}
+      </button>
+    </div>
+
+    <ul role="list" class="flex flex-col p-base">
+      {% for link in menu.links %}
+        <li class="border-b border-foreground/10 py-2 last:border-0">
+          {% if link.links.size > 0 %}
+            <details>
+              <summary class="flex cursor-pointer list-none items-center justify-between text-foreground [&_svg]:h-4 [&_svg]:w-4 [&::-webkit-details-marker]:hidden">
+                {{ link.title }}
+                {{ 'icon-chevron.svg' | inline_asset_content }}
+              </summary>
+              <ul role="list" class="mt-2 flex flex-col gap-2 pl-base">
+                {% for child_link in link.links %}
+                  <li>
+                    <a
+                      href="{{ child_link.url }}"
+                      class="text-foreground no-underline hover:text-primary"
+                      {% if child_link.current %}
+                        aria-current="page"
+                      {% endif %}
+                    >
+                      {{ child_link.title }}
+                    </a>
+                  </li>
+                {% endfor %}
+              </ul>
+            </details>
+          {% else %}
+            <a
+              href="{{ link.url }}"
+              class="block text-foreground no-underline hover:text-primary"
+              {% if link.current %}
+                aria-current="page"
+              {% endif %}
+            >
+              {{ link.title }}
+            </a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </dialog>
+</header-drawer>

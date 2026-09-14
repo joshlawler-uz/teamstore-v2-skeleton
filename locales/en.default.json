@@ -1,4 +1,10 @@
 {
+  "accessibility": {
+    "header_navigation": "Main navigation",
+    "cart": "Cart",
+    "menu": "Menu",
+    "close": "Close"
+  },
   "404": {
     "title": "404",
     "not_found": "Page not found.",
@@ -46,6 +52,7 @@
     "title": "Search",
     "placeholder": "Search articles, pages, or products",
     "submit": "Search",
+    "products": "Products",
     "no_results_html": "No results found for {{ terms }}",
     "results_for_html": "{{ count }} results found for {{ terms }}"
   }
