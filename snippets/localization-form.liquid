@@ -5,10 +5,12 @@
   selection. Only renders when more than one option is available.
 
   @param {string} type - Either 'country' or 'language'
+  @param {string} context - Unique per call site (e.g. 'header', 'drawer') so element IDs
+    don't collide when this snippet is rendered more than once on the same page.
 
   @example
-  {% render 'localization-form', type: 'country' %}
-  {% render 'localization-form', type: 'language' %}
+  {% render 'localization-form', type: 'country', context: 'header' %}
+  {% render 'localization-form', type: 'language', context: 'header' %}
 {% enddoc %}
 
 {% liquid
@@ -27,7 +29,7 @@
         type="button"
         data-dropdown-trigger
         aria-expanded="false"
-        aria-controls="localization-{{ type }}-list"
+        aria-controls="localization-{{ context }}-{{ type }}-list"
         class="flex items-center gap-1 text-foreground [&_svg]:h-4 [&_svg]:w-4 hover:text-primary"
       >
         {% if type == 'country' %}
@@ -39,7 +41,7 @@
       </button>
 
       <ul
-        id="localization-{{ type }}-list"
+        id="localization-{{ context }}-{{ type }}-list"
         data-dropdown-panel
         role="list"
         hidden
@@ -81,9 +83,9 @@
       </ul>
 
       {% if type == 'country' %}
-        <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+        <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}" data-localization-input>
       {% else %}
-        <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}">
+        <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}" data-localization-input>
       {% endif %}
     {% endform %}
   </localization-form>

@@ -39,7 +39,10 @@ class NavDropdown extends HTMLElement {
 class LocalizationForm extends NavDropdown {
   connectedCallback() {
     super.connectedCallback()
-    this.input = this.querySelector('input[type="hidden"]')
+    // `{% form 'localization' %}` injects its own hidden fields (form_type, utf8) before our
+    // content, so a plain `input[type="hidden"]` selector grabs the wrong one — use the
+    // data attribute that marks our actual country_code/language_code input.
+    this.input = this.querySelector('input[data-localization-input]')
     this.form = this.querySelector('form')
     if (!this.input || !this.form) return
 

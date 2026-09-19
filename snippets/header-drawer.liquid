@@ -2,6 +2,9 @@
   Renders the mobile header hamburger trigger and its native <dialog> drawer.
   Behavior lives in `<header-drawer>` (see frontend/entrypoints/header.js);
   nested menu items use native <details> for the accordion, no JS required.
+  Also renders the country/language switcher below the nav — the header's own
+  copy (sections/header.liquid) is hidden below the `md` breakpoint to avoid
+  crowding the mobile action row.
 
   @param {object} menu - The menu to render inside the drawer
 
@@ -25,17 +28,16 @@
   <dialog
     id="header-drawer-dialog"
     aria-label="{{ 'accessibility.header_navigation' | t }}"
-    class="m-0 h-full w-full max-w-xs border-0 bg-background p-0 [&::backdrop]:bg-foreground/50"
+    class="m-0 flex h-full max-h-full w-full max-w-xs flex-col border-0 bg-background p-0 [&::backdrop]:bg-foreground/50"
   >
     <div class="flex items-center justify-between border-b border-foreground/10 p-base">
-      <span class="font-heading font-semibold text-foreground">{{ shop.name }}</span>
       <button type="button" data-dialog-close class="flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6">
         <span class="sr-only">{{ 'accessibility.close' | t }}</span>
         {{ 'icon-close.svg' | inline_asset_content }}
       </button>
     </div>
 
-    <ul role="list" class="flex flex-col p-base">
+    <ul role="list" class="flex flex-1 flex-col overflow-y-auto p-base">
       {% for link in menu.links %}
         <li class="border-b border-foreground/10 py-2 last:border-0">
           {% if link.links.size > 0 %}
@@ -74,5 +76,10 @@
         </li>
       {% endfor %}
     </ul>
+
+    <div class="flex items-center gap-base border-t border-foreground/10 p-base">
+      {% render 'localization-form', type: 'country', context: 'drawer' %}
+      {% render 'localization-form', type: 'language', context: 'drawer' %}
+    </div>
   </dialog>
 </header-drawer>

@@ -28,8 +28,10 @@
       </div>
 
       <div class="flex items-center gap-base [&_shopify-store]:hidden">
-        {% render 'localization-form', type: 'country' %}
-        {% render 'localization-form', type: 'language' %}
+        <div class="hidden items-center gap-base md:flex">
+          {% render 'localization-form', type: 'country', context: 'header' %}
+          {% render 'localization-form', type: 'language', context: 'header' %}
+        </div>
         {% render 'search-modal' %}
 
         {% if shop.customer_accounts_enabled %}
@@ -70,7 +72,8 @@
     {
       "type": "link_list",
       "id": "menu",
-      "label": "t:labels.menu"
+      "label": "t:labels.menu",
+      "default": "main-menu"
     },
     {
       "type": "link_list",
