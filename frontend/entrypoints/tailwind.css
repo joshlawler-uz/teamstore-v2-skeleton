@@ -15,7 +15,9 @@
 */
 @theme inline {
   --color-primary: var(--color-primary);
+  --color-on-primary: var(--color-on-primary);
   --color-secondary: var(--color-secondary);
+  --color-on-secondary: var(--color-on-secondary);
   --color-background: var(--color-background);
   --color-foreground: var(--color-foreground);
   --font-heading: var(--font-heading);

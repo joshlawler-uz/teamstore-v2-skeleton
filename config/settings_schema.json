@@ -82,24 +82,58 @@
     "name": "t:general.colors",
     "settings": [
       {
-        "type": "color_palette",
-        "id": "color_palette",
-        "default": {
-          "background": "#FFFFFF",
-          "foreground": "#333333"
+        "type": "color_scheme_group",
+        "id": "color_schemes",
+        "definition": [
+          {
+            "type": "color",
+            "id": "background",
+            "label": "t:labels.background",
+            "default": "#F5F5F5"
+          },
+          {
+            "type": "color",
+            "id": "text",
+            "label": "t:labels.foreground",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "button",
+            "label": "t:labels.primary_button_background",
+            "default": "#FF69B4"
+          },
+          {
+            "type": "color",
+            "id": "button_label",
+            "label": "t:labels.primary_button_text",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button",
+            "label": "t:labels.secondary_button_background",
+            "default": "#663399"
+          },
+          {
+            "type": "color",
+            "id": "secondary_button_label",
+            "label": "t:labels.secondary_button_text",
+            "default": "#FFFFFF"
+          }
+        ],
+        "role": {
+          "text": "text",
+          "background": "background",
+          "links": "text",
+          "icons": "text",
+          "primary_button": "button",
+          "on_primary_button": "button_label",
+          "primary_button_border": "button",
+          "secondary_button": "secondary_button",
+          "on_secondary_button": "secondary_button_label",
+          "secondary_button_border": "secondary_button"
         }
-      },
-      {
-        "type": "color",
-        "id": "palette_primary_button_background",
-        "label": "t:labels.primary_button_background",
-        "default": "{{ settings.color_palette.foreground }}"
-      },
-      {
-        "type": "color",
-        "id": "palette_secondary_button_background",
-        "label": "t:labels.secondary_button_background",
-        "default": "{{ settings.color_palette.background }}"
       },
       {
         "type": "range",

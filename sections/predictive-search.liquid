@@ -1,0 +1,44 @@
+{% comment %}
+  Rendered on demand via Shopify's Predictive Search API
+  (GET /search/suggest?q={term}&section_id=predictive-search).
+  Not placed in any template or JSON group — see snippets/search-modal.liquid.
+{% endcomment %}
+
+{%- if predictive_search.performed -%}
+  <div id="predictive-search-results" data-predictive-search-results>
+    {%- if predictive_search.resources.products.size > 0 -%}
+      <h3 id="predictive-search-products-heading" class="mb-2 text-sm font-semibold text-foreground">
+        {{ 'search.products' | t }}
+      </h3>
+      <ul role="listbox" aria-labelledby="predictive-search-products-heading" class="flex flex-col gap-base">
+        {%- for product in predictive_search.resources.products -%}
+          <li role="option">
+            <a href="{{ product.url }}" class="flex items-center gap-base text-foreground no-underline hover:text-primary">
+              {% render 'image', image: product.featured_media.preview_image, width: 60, height: 60, crop: 'center', class: 'w-15' %}
+              <span>
+                {{ product.title }}
+                <span class="block text-sm text-foreground/60">{{ product.price | money }}</span>
+              </span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      <a
+        href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}"
+        class="mt-2 block text-foreground no-underline hover:text-primary"
+      >
+        {{ 'search.results_for_html' | t: count: predictive_search.resources.products.size, terms: predictive_search.terms }}
+      </a>
+    {%- else -%}
+      <p class="text-foreground">{{ 'search.no_results_html' | t: terms: predictive_search.terms }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "t:general.search",
+  "settings": []
+}
+{% endschema %}
