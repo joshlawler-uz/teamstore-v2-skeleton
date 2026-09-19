@@ -34,19 +34,20 @@ if (settings.current.color_schemes && !force) {
 // "scheme-1" is the default colour_scheme_group entry — any section that doesn't explicitly
 // pick a different scheme resolves to this one, so seeding it here is what makes "no scheme
 // selected" mean "use the client config's defaults" per the color_scheme_group's own semantics.
-settings.current.color_schemes = [
-  {
-    id: 'scheme-1',
-    settings: {
-      background: config.colors.background,
-      text: config.colors.foreground,
-      button: config.colors.primary,
-      button_label: config.colors.primaryText,
-      secondary_button: config.colors.secondary,
-      secondary_button_label: config.colors.secondaryText,
-    },
+//
+// color_scheme_group data is stored as an OBJECT keyed by scheme id (each value is the
+// settings directly, no separate "id"/"settings" wrapper) — NOT an array. An array here
+// produces "Color scheme group must be an object" from the theme editor.
+settings.current.color_schemes = {
+  'scheme-1': {
+    background: config.colors.background,
+    text: config.colors.foreground,
+    button: config.colors.primary,
+    button_label: config.colors.primaryText,
+    secondary_button: config.colors.secondary,
+    secondary_button_label: config.colors.secondaryText,
   },
-]
+}
 
 writeFileSync(settingsPath, leadingComment + JSON.stringify(settings, null, 2) + '\n')
 console.log(`Seeded config/settings_data.json colour scheme from clients/${client}/config.json`)
