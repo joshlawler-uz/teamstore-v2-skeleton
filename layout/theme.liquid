@@ -1,6 +1,10 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
+    {% if settings.favicon %}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {% endif %}
+
     {% comment %}
       Font preloading:
       1. Preconnect to font CDN for faster connection
@@ -31,9 +35,18 @@
   </head>
 
   <body>
+    <a
+      href="#MainContent"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-background focus:px-base focus:py-2 focus:text-foreground focus:shadow-md"
+    >
+      {{ 'accessibility.skip_to_content' | t }}
+    </a>
+
     {% sections 'header-group' %}
 
-    {{ content_for_layout }}
+    <main id="MainContent" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
 
     {% sections 'footer-group' %}
   </body>
