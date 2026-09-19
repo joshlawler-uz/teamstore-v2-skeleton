@@ -9,11 +9,18 @@
  */
 {
   "current": {
-    "color_palette": {
-      "background": "whitesmoke",
-      "foreground": "black"
-    },
-    "palette_primary_button_background": "hotpink",
-    "palette_secondary_button_background": "rebeccapurple"
+    "color_schemes": [
+      {
+        "id": "scheme-1",
+        "settings": {
+          "background": "#F5F5F5",
+          "text": "#000000",
+          "button": "#FF69B4",
+          "button_label": "#FFFFFF",
+          "secondary_button": "#663399",
+          "secondary_button_label": "#FFFFFF"
+        }
+      }
+    ]
   }
 }

@@ -1,10 +1,10 @@
-// Seeds config/settings_data.json's color palette from a client config in clients/<name>/config.json.
-// Client is selected via the CLIENT env var (defaults to "default").
+// Seeds config/settings_data.json's default colour scheme from a client config in
+// clients/<name>/config.json. Client is selected via the CLIENT env var (defaults to "default").
 //
 // Unlike generate-tokens.mjs, this is NOT run on every build: settings_data.json is
 // merchant-editable once a theme is live (theme editor writes to it directly), so this
 // only seeds the initial values. Re-running it will refuse to overwrite an already-seeded
-// palette unless --force is passed.
+// scheme unless --force is passed.
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
@@ -26,17 +26,27 @@ const settings = JSON.parse(rawSettings.slice(leadingComment.length))
 
 settings.current ??= {}
 
-if (settings.current.color_palette && !force) {
-  console.log('config/settings_data.json already has a seeded color palette — skipping (pass --force to overwrite).')
+if (settings.current.color_schemes && !force) {
+  console.log('config/settings_data.json already has a seeded colour scheme — skipping (pass --force to overwrite).')
   process.exit(0)
 }
 
-settings.current.color_palette = {
-  background: config.colors.background,
-  foreground: config.colors.foreground,
-}
-settings.current.palette_primary_button_background = config.colors.primary
-settings.current.palette_secondary_button_background = config.colors.secondary
+// "scheme-1" is the default colour_scheme_group entry — any section that doesn't explicitly
+// pick a different scheme resolves to this one, so seeding it here is what makes "no scheme
+// selected" mean "use the client config's defaults" per the color_scheme_group's own semantics.
+settings.current.color_schemes = [
+  {
+    id: 'scheme-1',
+    settings: {
+      background: config.colors.background,
+      text: config.colors.foreground,
+      button: config.colors.primary,
+      button_label: config.colors.primaryText,
+      secondary_button: config.colors.secondary,
+      secondary_button_label: config.colors.secondaryText,
+    },
+  },
+]
 
 writeFileSync(settingsPath, leadingComment + JSON.stringify(settings, null, 2) + '\n')
-console.log(`Seeded config/settings_data.json color palette from clients/${client}/config.json`)
+console.log(`Seeded config/settings_data.json colour scheme from clients/${client}/config.json`)

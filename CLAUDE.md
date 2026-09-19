@@ -133,6 +133,15 @@ size charts) even though none are integrated yet:
 
 ## Known build-tooling gotchas (already fixed, don't reintroduce)
 
+- **`clients/<name>/config.json`'s `colors.background`/`colors.foreground` must be hex, not CSS
+  keyword names** (`"whitesmoke"`/`"black"` broke this; use `#F5F5F5`/`#000000` etc.). These two
+  feed Shopify's `color_palette` setting type via `scripts/seed-settings.mjs`, which strictly
+  requires hex colors with no alpha channel — unlike plain CSS (or the `color` setting type used
+  for `colors.primary`/`colors.secondary`), keyword names are rejected outright with a
+  `Setting '<id>' must be a CSS color` error, and this doesn't show up in `npm run check` — only
+  when Shopify actually renders/validates the live settings data. After changing any client's
+  placeholder colors, run `npm run tokens && node scripts/seed-settings.mjs --force` and confirm
+  `config/settings_data.json`'s `color_palette` values are still hex before assuming it's fine.
 - `.shopifyignore` must **not** exclude `snippets/vite-tag.liquid` — it's generated (correctly
   gitignored), but the live theme still needs it present to serve any `{% render 'vite-tag' %}`
   call. It was excluded early on with no ill effect only because nothing rendered it yet.

@@ -40,7 +40,8 @@
             hidden
             class="absolute {% if is_top %}left-0 top-full{% else %}left-full top-0{% endif %} z-10 min-w-40 rounded border border-foreground/10 bg-background py-2 shadow-md"
           >
-            {% render 'header-nav-list', links: link.links, level: level | plus: 1 %}
+            {% assign next_level = level | plus: 1 %}
+            {% render 'header-nav-list', links: link.links, level: next_level %}
           </ul>
         </nav-dropdown>
       {% else %}

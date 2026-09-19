@@ -1,16 +1,33 @@
-<header class="full-width border-b border-foreground/10">
+<header class="color-{{ section.settings.color_scheme }} full-width border-b border-foreground/10">
   <div class="grid grid-cols-[var(--content-grid)]">
     <div class="col-start-2 flex items-center justify-between gap-base py-base">
       <div class="flex items-center gap-base">
-        {% render 'header-drawer', menu: section.settings.menu %}
-        <a href="{{ routes.root_url }}" class="font-heading text-lg font-semibold text-foreground no-underline">
-          {{ shop.name }}
-        </a>
+        <div class="flex items-center gap-base">
+          {% render 'header-drawer', menu: section.settings.menu %}
+
+          {% if settings.logo %}
+            {% assign logo_width = settings.logo_height | times: settings.logo.aspect_ratio | ceil %}
+            <a href="{{ routes.root_url }}" class="flex items-center">
+              <img
+                src="{{ settings.logo | image_url: width: 400 }}"
+                alt="{{ shop.name }}"
+                width="{{ logo_width }}"
+                height="{{ settings.logo_height }}"
+                style="height: {{ settings.logo_height }}px; width: {{ logo_width }}px;"
+                loading="eager"
+              >
+            </a>
+          {% else %}
+            <a href="{{ routes.root_url }}" class="font-heading text-lg font-semibold text-foreground no-underline">
+              {{ shop.name }}
+            </a>
+          {% endif %}
+        </div>
+
+        {% render 'header-nav', menu: section.settings.menu %}
       </div>
 
-      {% render 'header-nav', menu: section.settings.menu %}
-
-      <div class="flex items-center gap-base">
+      <div class="flex items-center gap-base [&_shopify-store]:hidden">
         {% render 'localization-form', type: 'country' %}
         {% render 'localization-form', type: 'language' %}
         {% render 'search-modal' %}
@@ -44,6 +61,12 @@
 {
   "name": "t:general.header",
   "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
     {
       "type": "link_list",
       "id": "menu",
