@@ -1,5 +1,6 @@
 {
   "accessibility": {
+    "skip_to_content": "Skip to content",
     "header_navigation": "Main navigation",
     "cart": "Cart",
     "menu": "Menu",

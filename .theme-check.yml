@@ -2,3 +2,12 @@ extends: theme-check:recommended
 ignore:
   - node_modules/**
   - frontend/**
+
+# Opt-in checks: omitted from `recommended`, not disabled by it — see
+# https://shopify.dev/docs/storefronts/themes/tools/theme-check/checks
+# Especially relevant here since assets/header.js and assets/critical.css are hand-written,
+# uncompressed, with no bundler to warn about size regressions (see CLAUDE.md).
+AssetSizeCSS:
+  enabled: true
+AssetSizeJavaScript:
+  enabled: true
