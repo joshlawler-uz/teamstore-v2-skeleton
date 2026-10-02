@@ -49,6 +49,11 @@
     "password": "Password",
     "enter": "Enter"
   },
+  "products": {
+    "sold_out": "Sold out",
+    "from_price_html": "From {{ price }}",
+    "view_all": "Shop all"
+  },
   "search": {
     "title": "Search",
     "placeholder": "Search articles, pages, or products",

@@ -1,0 +1,121 @@
+{% comment %}
+  Product grid for one collection, with a heading and a "Shop all" link to
+  the collection page. Renders snippets/product-card.liquid for each product.
+
+  `collection.products` shrinks to match `limit:` on its own — no
+  `{% paginate %}` needed (see CLAUDE.md's Liquid performance conventions).
+{% endcomment %}
+
+{% liquid
+  assign full_width = false
+  if section.settings.section_width == 'full'
+    assign full_width = true
+  endif
+%}
+
+<div class="color-{{ section.settings.color_scheme }} full-width">
+  <div class="{% if full_width %}px-base{% else %}grid grid-cols-[var(--content-grid)]{% endif %} py-base">
+    <div class="{% unless full_width %}col-start-2 {% endunless %}mb-base flex items-end justify-between gap-base">
+      {% if section.settings.heading != blank %}
+        <h2 class="font-heading text-2xl font-semibold text-foreground">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      {% if section.settings.collection != blank %}
+        <a href="{{ section.settings.collection.url }}" class="whitespace-nowrap text-sm text-foreground/60 no-underline hover:text-primary">
+          {{ 'products.view_all' | t }}
+        </a>
+      {% endif %}
+    </div>
+
+    {% if section.settings.layout_type == 'carousel' %}
+      <div class="{% unless full_width %}col-start-2 {% endunless %}flex snap-x snap-mandatory gap-base overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {% if section.settings.collection != blank %}
+          {% for product in section.settings.collection.products limit: section.settings.max_products %}
+            <div class="w-[70%] shrink-0 snap-start sm:w-[45%] md:w-[25%]">
+              {% render 'product-card', product: product %}
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="{% unless full_width %}col-start-2 {% endunless %}grid grid-cols-2 gap-base md:grid-cols-4">
+        {% if section.settings.collection != blank %}
+          {% for product in section.settings.collection.products limit: section.settings.max_products %}
+            {% render 'product-card', product: product %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:general.featured_collection",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "t:labels.collection"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "default": "Featured collection"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "t:labels.layout_type",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:options.layout_type.grid"
+        },
+        {
+          "value": "carousel",
+          "label": "t:options.layout_type.carousel"
+        }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "t:labels.max_products",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:labels.section_width",
+      "options": [
+        {
+          "value": "page",
+          "label": "t:options.section_width.page"
+        },
+        {
+          "value": "full",
+          "label": "t:options.section_width.full"
+        }
+      ],
+      "default": "page"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.featured_collection"
+    }
+  ]
+}
+{% endschema %}

@@ -25,3 +25,34 @@
   --radius: var(--border-radius);
   --spacing-base: var(--spacing-base);
 }
+
+/*
+  The first real text button (sections/hero.liquid's CTA) — per the project's styling
+  convention, a highest-repetition primitive gets one hand-authored class pair built from
+  token CSS variables via arbitrary values, rather than a raw utility chain repeated at
+  every call site. Reuse `.btn`/`.btn-primary` for any future button instead of re-deriving
+  the same classes.
+*/
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: calc(var(--spacing-base) / 2);
+    padding-block: calc(var(--spacing-base) * 0.75);
+    padding-inline: calc(var(--spacing-base) * 1.5);
+    border-radius: var(--radius);
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 150ms ease;
+  }
+
+  .btn:hover {
+    opacity: 0.85;
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+  }
+}

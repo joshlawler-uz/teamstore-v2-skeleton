@@ -1,0 +1,58 @@
+{% doc %}
+  Renders a single product card: image, title, price, and a sold-out badge
+  when the product has no available variants. The whole card is one link
+  (image + title + price), matching standard product-grid accessibility
+  patterns — no nested interactive elements.
+
+  The actual layout lives on an inner `flex flex-col` div, not on the `<a>`
+  itself — Shopify's theme editor (design mode only) injects its own CSS
+  forcing every `<a>` to `display: flex`, which would otherwise turn this
+  card's image/title/price into a horizontal row instead of a stack. The
+  inner div's explicit layout is immune to whatever display the `<a>` ends
+  up with.
+
+  @param {product} product - The product to render
+
+  @example
+  {% render 'product-card', product: product %}
+{% enddoc %}
+
+<a href="{{ product.url }}" class="group block text-foreground no-underline">
+  <div class="flex flex-col">
+    <div class="relative aspect-square overflow-hidden rounded bg-background">
+      {% if product.featured_image %}
+        <img
+          src="{{ product.featured_image | image_url: width: 600 }}"
+          srcset="
+            {{ product.featured_image | image_url: width: 300 }} 300w,
+            {{ product.featured_image | image_url: width: 600 }} 600w,
+            {{ product.featured_image | image_url: width: 900 }} 900w
+          "
+          sizes="(min-width: 768px) 25vw, 50vw"
+          alt="{{ product.featured_image.alt | default: product.title | escape }}"
+          width="{{ product.featured_image.width }}"
+          height="{{ product.featured_image.height }}"
+          loading="lazy"
+          class="h-full w-full object-cover transition-opacity group-hover:opacity-80"
+        >
+      {% endif %}
+
+      {% unless product.available %}
+        <span class="absolute left-2 top-2 rounded bg-foreground px-2 py-1 text-xs text-background">
+          {{ 'products.sold_out' | t }}
+        </span>
+      {% endunless %}
+    </div>
+
+    <p class="mt-2 text-sm text-foreground">{{ product.title }}</p>
+
+    <p class="text-sm text-foreground/60">
+      {% if product.price_varies %}
+        {% assign price_min = product.price_min | money %}
+        {{ 'products.from_price_html' | t: price: price_min }}
+      {% else %}
+        {{ product.price | money }}
+      {% endif %}
+    </p>
+  </div>
+</a>
