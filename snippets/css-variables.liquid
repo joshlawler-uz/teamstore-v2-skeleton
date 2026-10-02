@@ -5,14 +5,37 @@
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
 
+  {% # Global, non-colour theme-setting overrides %}
   :root {
     --font-body: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
     --page-width: {{ settings.max_page_width }};
     --page-margin: {{ settings.min_page_margin }}px;
-    --color-background: {{ settings.color_palette.background }};
-    --color-foreground: {{ settings.color_palette.foreground }};
-    --color-primary: {{ settings.palette_primary_button_background }};
-    --color-secondary: {{ settings.palette_secondary_button_background }};
     --border-radius-inputs: {{ settings.input_corner_radius }}px;
+  }
+
+  {% # One scoped rule per colour scheme, so a section can opt into any of them via its own
+     # `color_scheme` setting — see sections/header.liquid's `color-{{ section.settings.color_scheme }}`
+     # wrapper class for how a section picks one up. %}
+  {% for scheme in settings.color_schemes %}
+    .color-{{ scheme.id }} {
+      --color-background: {{ scheme.settings.background }};
+      --color-foreground: {{ scheme.settings.text }};
+      --color-primary: {{ scheme.settings.button }};
+      --color-on-primary: {{ scheme.settings.button_label }};
+      --color-secondary: {{ scheme.settings.secondary_button }};
+      --color-on-secondary: {{ scheme.settings.secondary_button_label }};
+    }
+  {% endfor %}
+
+  {% # Root fallback for anything rendered outside a scheme-scoped wrapper — always the first
+     # (default) scheme, matching what a section with no `color_scheme` setting resolves to. %}
+  {% assign default_scheme = settings.color_schemes.first %}
+  :root {
+    --color-background: {{ default_scheme.settings.background }};
+    --color-foreground: {{ default_scheme.settings.text }};
+    --color-primary: {{ default_scheme.settings.button }};
+    --color-on-primary: {{ default_scheme.settings.button_label }};
+    --color-secondary: {{ default_scheme.settings.secondary_button }};
+    --color-on-secondary: {{ default_scheme.settings.secondary_button_label }};
   }
 {% endstyle %}

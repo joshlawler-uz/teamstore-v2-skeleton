@@ -31,6 +31,15 @@ for (const dir of BASE_THEME_DIRS) {
   }
 }
 
+// Shopify CLI reads .shopifyignore from the directory it's pushing (this composed output),
+// not from the repo root — without copying it here, exclusions like assets/.vite/* never
+// apply to `shopify theme push --path .dist/<client>`, and the push fails with "Theme files
+// may not be stored in subfolders".
+const shopifyIgnorePath = path.join(rootDir, '.shopifyignore')
+if (existsSync(shopifyIgnorePath)) {
+  copyFileSync(shopifyIgnorePath, path.join(outputDir, '.shopifyignore'))
+}
+
 if (existsSync(customDir)) {
   cpSync(customDir, outputDir, { recursive: true })
   console.log(`Composed .dist/${client}/ from the base theme + clients/${client}/custom/`)

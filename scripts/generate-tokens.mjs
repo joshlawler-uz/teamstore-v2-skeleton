@@ -17,7 +17,9 @@ const css = `/*
 */
 :root {
   --color-primary: ${config.colors.primary};
+  --color-on-primary: ${config.colors.primaryText};
   --color-secondary: ${config.colors.secondary};
+  --color-on-secondary: ${config.colors.secondaryText};
   --color-background: ${config.colors.background};
   --color-foreground: ${config.colors.foreground};
   --font-heading: ${config.fonts.heading};

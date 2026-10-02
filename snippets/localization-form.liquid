@@ -1,0 +1,92 @@
+{% doc %}
+  Renders a country or language selector using Shopify's localization form.
+  Reuses the `<nav-dropdown>` disclosure behavior via `<localization-form>`
+  (see frontend/entrypoints/header.js), extended to submit the form on
+  selection. Only renders when more than one option is available.
+
+  @param {string} type - Either 'country' or 'language'
+  @param {string} context - Unique per call site (e.g. 'header', 'drawer') so element IDs
+    don't collide when this snippet is rendered more than once on the same page.
+
+  @example
+  {% render 'localization-form', type: 'country', context: 'header' %}
+  {% render 'localization-form', type: 'language', context: 'header' %}
+{% enddoc %}
+
+{% liquid
+  assign show = false
+  if type == 'country' and localization.available_countries.size > 1
+    assign show = true
+  elsif type == 'language' and localization.available_languages.size > 1
+    assign show = true
+  endif
+%}
+
+{% if show %}
+  <localization-form class="relative block">
+    {% form 'localization' %}
+      <button
+        type="button"
+        data-dropdown-trigger
+        aria-expanded="false"
+        aria-controls="localization-{{ context }}-{{ type }}-list"
+        class="flex items-center gap-1 text-foreground [&_svg]:h-4 [&_svg]:w-4 hover:text-primary"
+      >
+        {% if type == 'country' %}
+          {{ localization.country.name }} ({{ localization.country.currency.iso_code }})
+        {% else %}
+          {{ localization.language.endonym_name | capitalize }}
+        {% endif %}
+        {{ 'icon-chevron.svg' | inline_asset_content }}
+      </button>
+
+      <ul
+        id="localization-{{ context }}-{{ type }}-list"
+        data-dropdown-panel
+        role="list"
+        hidden
+        class="absolute left-0 top-full z-10 max-h-64 min-w-40 overflow-y-auto rounded border border-foreground/10 bg-background py-2 shadow-md"
+      >
+        {% if type == 'country' %}
+          {% for country in localization.available_countries %}
+            <li>
+              <a
+                href="#"
+                data-value="{{ country.iso_code }}"
+                {% if country.iso_code == localization.country.iso_code %}
+                  aria-current="true"
+                {% endif %}
+                class="block px-base py-1 text-foreground no-underline hover:text-primary"
+              >
+                {{ country.name }} ({{ country.currency.iso_code }})
+              </a>
+            </li>
+          {% endfor %}
+        {% else %}
+          {% for language in localization.available_languages %}
+            <li>
+              <a
+                href="#"
+                data-value="{{ language.iso_code }}"
+                hreflang="{{ language.iso_code }}"
+                lang="{{ language.iso_code }}"
+                {% if language.iso_code == localization.language.iso_code %}
+                  aria-current="true"
+                {% endif %}
+                class="block px-base py-1 text-foreground no-underline hover:text-primary"
+              >
+                {{ language.endonym_name | capitalize }}
+              </a>
+            </li>
+          {% endfor %}
+        {% endif %}
+      </ul>
+
+      {% if type == 'country' %}
+        <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}" data-localization-input>
+      {% else %}
+        <input type="hidden" name="language_code" value="{{ localization.language.iso_code }}" data-localization-input>
+      {% endif %}
+    {% endform %}
+  </localization-form>
+{% endif %}

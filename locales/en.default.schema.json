@@ -37,6 +37,7 @@
   "labels": {
     "alignment": "Alignment",
     "background": "Background",
+    "color_scheme": "Colour scheme",
     "foreground": "Foreground",
     "grid_gap": "Grid spacing",
     "grid_item_width": "Grid item width",
@@ -51,7 +52,9 @@
     "page_margin": "Page margin",
     "page_width": "Page width",
     "primary_button_background": "Primary button background",
+    "primary_button_text": "Primary button text",
     "secondary_button_background": "Secondary button background",
+    "secondary_button_text": "Secondary button text",
     "show_payment_icons": "Show payment icons",
     "text_style": "Text style",
     "text": "Text"
