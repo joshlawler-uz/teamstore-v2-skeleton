@@ -13,13 +13,35 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "menu": {
+          "type": "menu",
+          "settings": {
+            "heading": "",
+            "menu": "footer"
+          }
+        },
+        "social-links": {
+          "type": "social-links",
+          "settings": {}
+        }
+      },
+      "block_order": ["menu", "social-links"],
       "settings": {
-        "menu": "",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "footer-utilities": {
+      "type": "footer-utilities",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_powered_by": true,
         "show_payment_icons": true
       }
     }
   },
   "order": [
-    "footer"
+    "footer",
+    "footer-utilities"
   ]
 }
