@@ -15,6 +15,7 @@
     "custom_section": "Custom section",
     "fonts": "Fonts",
     "footer": "Footer",
+    "footer_utilities": "Footer utilities",
     "group": "Group",
     "header": "Header",
     "layout": "Layout",
@@ -30,6 +31,7 @@
     "section": "Section",
     "settings": "Settings",
     "sidebar": "Sidebar",
+    "social_links": "Social media links",
     "text": "Text",
     "theme": "Theme",
     "typography": "Typography"
@@ -46,6 +48,9 @@
     "logo": "Logo",
     "logo_height": "Logo height",
     "favicon": "Favicon",
+    "facebook": "Facebook",
+    "heading": "Heading",
+    "instagram": "Instagram",
     "menu": "Menu",
     "customer_account_menu": "Customer account menu",
     "padding": "Padding",
@@ -56,8 +61,12 @@
     "secondary_button_background": "Secondary button background",
     "secondary_button_text": "Secondary button text",
     "show_payment_icons": "Show payment icons",
+    "show_powered_by": "Show \"Powered by Shopify\"",
     "text_style": "Text style",
-    "text": "Text"
+    "text": "Text",
+    "tiktok": "TikTok",
+    "x": "X",
+    "youtube": "YouTube"
   },
   "options": {
     "alignment": {

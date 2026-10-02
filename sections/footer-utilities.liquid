@@ -1,0 +1,63 @@
+{% comment %}
+  Renders the footer's secondary bottom bar: copyright, policy links, and
+  (optionally) payment icons. The country/language switcher is deliberately
+  not duplicated here — it's already reachable from the header
+  (snippets/localization-form.liquid, rendered via sections/header.liquid and
+  snippets/header-drawer.liquid).
+{% endcomment %}
+
+<div class="color-{{ section.settings.color_scheme }} full-width border-t border-foreground/10">
+  <div class="grid grid-cols-[var(--content-grid)]">
+    <div class="col-start-2 flex flex-col items-center gap-2 py-base text-sm text-foreground/60 md:flex-row md:justify-between">
+      {% if section.settings.show_payment_icons %}
+        <div class="flex flex-wrap items-center justify-center gap-2 [&_svg]:h-6 md:justify-start">
+          {% for type in shop.enabled_payment_types %}
+            {{ type | payment_type_svg_tag }}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if shop.policies.size > 0 %}
+        <ul role="list" class="flex flex-wrap items-center justify-center gap-base md:justify-start">
+          {% for policy in shop.policies %}
+            {% if policy != blank %}
+              <li>
+                <a href="{{ policy.url }}" class="text-foreground/60 no-underline hover:text-primary">{{ policy.title }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      <p class="m-0 text-center md:text-left">
+        &copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}{% if section.settings.show_powered_by %}, {{ powered_by_link }}{% endif %}
+      </p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:general.footer_utilities",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_powered_by",
+      "label": "t:labels.show_powered_by",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "t:labels.show_payment_icons",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
