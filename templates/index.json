@@ -9,12 +9,26 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "custom-section",
-      "settings": {}
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "Welcome to the club store",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/all"
+      }
+    },
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "heading": "Featured collection",
+        "max_products": 4
+      }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "featured-collection"
   ]
 }

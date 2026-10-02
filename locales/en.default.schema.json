@@ -13,11 +13,13 @@
     "column": "Column",
     "content": "Content",
     "custom_section": "Custom section",
+    "featured_collection": "Featured collection",
     "fonts": "Fonts",
     "footer": "Footer",
     "footer_utilities": "Footer utilities",
     "group": "Group",
     "header": "Header",
+    "hero": "Hero",
     "layout": "Layout",
     "logo": "Logo",
     "main": "Main",
@@ -39,23 +41,32 @@
   "labels": {
     "alignment": "Alignment",
     "background": "Background",
+    "button_label": "Button label",
+    "button_link": "Button link",
+    "collection": "Collection",
     "color_scheme": "Colour scheme",
     "foreground": "Foreground",
     "grid_gap": "Grid spacing",
     "grid_item_width": "Grid item width",
+    "image": "Image",
+    "image_mobile": "Mobile image",
     "input_corner_radius": "Input corner radius",
     "layout_direction": "Layout direction",
     "logo": "Logo",
+    "max_products": "Number of products",
     "logo_height": "Logo height",
     "favicon": "Favicon",
     "facebook": "Facebook",
     "heading": "Heading",
     "instagram": "Instagram",
+    "layout_type": "Layout",
+    "media_type": "Media type",
     "menu": "Menu",
     "customer_account_menu": "Customer account menu",
     "padding": "Padding",
     "page_margin": "Page margin",
     "page_width": "Page width",
+    "section_width": "Width",
     "primary_button_background": "Primary button background",
     "primary_button_text": "Primary button text",
     "secondary_button_background": "Secondary button background",
@@ -65,8 +76,12 @@
     "text_style": "Text style",
     "text": "Text",
     "tiktok": "TikTok",
+    "video": "Video",
     "x": "X",
     "youtube": "YouTube"
+  },
+  "info": {
+    "image_mobile": "Optional. Shown instead of the image above on screens narrower than 768px."
   },
   "options": {
     "alignment": {
@@ -78,9 +93,21 @@
       "horizontal": "Horizontal",
       "vertical": "Vertical"
     },
+    "layout_type": {
+      "grid": "Grid",
+      "carousel": "Carousel"
+    },
+    "media_type": {
+      "image": "Image",
+      "video": "Video"
+    },
     "page_width": {
       "narrow": "Narrow",
       "wide": "Wide"
+    },
+    "section_width": {
+      "page": "Page width",
+      "full": "Full width"
     },
     "size": {
       "large": "Large",
