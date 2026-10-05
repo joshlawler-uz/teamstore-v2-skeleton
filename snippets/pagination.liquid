@@ -1,0 +1,50 @@
+{% doc %}
+  Renders accessible page navigation for a paginated list.
+
+  @param {object} paginate - The `paginate` object from an enclosing `{% paginate %}` tag
+
+  @example
+  {% paginate collection.products by 24 %}
+    ...
+    {% render 'pagination', paginate: paginate %}
+  {% endpaginate %}
+{% enddoc %}
+
+{% if paginate.pages > 1 %}
+  <nav
+    role="navigation"
+    aria-label="{{ 'accessibility.pagination' | t }}"
+    class="mt-base flex items-center justify-center gap-2"
+    data-pagination
+  >
+    {% if paginate.previous %}
+      <a href="{{ paginate.previous.url }}" class="rounded px-2 py-1 text-sm text-foreground no-underline hover:text-primary">
+        {{ 'accessibility.previous' | t }}
+      </a>
+    {% endif %}
+
+    {% for part in paginate.parts %}
+      {% if part.is_link %}
+        <a
+          href="{{ part.url }}"
+          class="rounded px-2 py-1 text-sm text-foreground no-underline hover:text-primary"
+          aria-label="{{ 'accessibility.page' | t: page: part.title }}"
+        >
+          {{ part.title }}
+        </a>
+      {% elsif part.title == paginate.current_page %}
+        <span class="rounded bg-primary px-2 py-1 text-sm text-on-primary" aria-current="page">
+          {{ part.title }}
+        </span>
+      {% else %}
+        <span class="px-2 py-1 text-sm text-foreground/60">{{ part.title }}</span>
+      {% endif %}
+    {% endfor %}
+
+    {% if paginate.next %}
+      <a href="{{ paginate.next.url }}" class="rounded px-2 py-1 text-sm text-foreground no-underline hover:text-primary">
+        {{ 'accessibility.next' | t }}
+      </a>
+    {% endif %}
+  </nav>
+{% endif %}

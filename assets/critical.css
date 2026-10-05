@@ -1,74 +1,84 @@
 /** Critical CSS for the theme. This file is included on every page. */
 
-/* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
-* {
-  box-sizing: border-box;
-  margin: 0;
-}
+/*
+  Wrapped in Tailwind's own "base" cascade layer rather than left unlayered —
+  unlayered CSS always wins over @layer-wrapped CSS regardless of specificity,
+  so leaving this reset unlayered meant it silently beat every Tailwind margin
+  utility (ml-auto, mt-2, etc.) site-wide, no matter how specific the utility
+  class was. Wrapping it in the same "base" layer Tailwind's own preflight
+  uses lets Tailwind's utilities (a higher-priority layer) win as expected.
+*/
+@layer base {
+  /* Reset styles inspired by https://www.joshwcomeau.com/css/custom-css-reset/ */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+  }
 
-body {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  min-height: 100svh;
-}
+  body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    min-height: 100svh;
+  }
 
-html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
-  overflow: hidden;
-}
+  html:has(dialog[scroll-lock][open], details[scroll-lock][open]) {
+    overflow: hidden;
+  }
 
-img,
-picture,
-video,
-canvas,
-svg {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
 
-input,
-textarea,
-select {
-  font: inherit;
-  border-radius: var(--border-radius-inputs);
-}
+  input,
+  textarea,
+  select {
+    font: inherit;
+    border-radius: var(--border-radius-inputs);
+  }
 
-select {
-  background-color: var(--color-background);
-  color: currentcolor;
-}
+  select {
+    background-color: var(--color-background);
+    color: currentcolor;
+  }
 
-dialog {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-}
+  dialog {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
 
-p {
-  text-wrap: pretty;
-}
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  overflow-wrap: break-word;
-}
+  p {
+    text-wrap: pretty;
+  }
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow-wrap: break-word;
+  }
 
-p:empty {
-  display: none;
-}
+  p:empty {
+    display: none;
+  }
 
-:is(p, h1, h2, h3, h4, h5, h6):first-child,
-:empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
-  margin-block-start: 0;
-}
+  :is(p, h1, h2, h3, h4, h5, h6):first-child,
+  :empty:first-child + :where(p, h1, h2, h3, h4, h5, h6) {
+    margin-block-start: 0;
+  }
 
-:is(p, h1, h2, h3, h4, h5, h6):last-child,
-:where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
-  margin-block-end: 0;
+  :is(p, h1, h2, h3, h4, h5, h6):last-child,
+  :where(p, h1, h2, h3, h4, h5, h6) + :has(+ :empty:last-child) {
+    margin-block-end: 0;
+  }
 }
 
 /** Theme styles below */

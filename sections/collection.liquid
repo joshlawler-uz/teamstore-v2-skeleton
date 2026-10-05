@@ -1,47 +1,236 @@
 {% comment %}
-  This section is used in the collection template to render collection page
-  listing all products within a collection.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/collection
+  Collection page: banner, filters drawer + sort bar, product grid, pagination.
+  Sort/filter/pagination are plain <form>/<a> GET requests, progressively
+  enhanced by <collection-filters> (assets/collection.js).
 {% endcomment %}
 
-<h1>{{ collection.title }}</h1>
+<div class="color-{{ section.settings.color_scheme }} full-width">
+  <div class="grid grid-cols-[var(--content-grid)] py-base">
+    <div class="col-start-2">
+      {% if section.settings.show_banner_image and collection.image %}
+        <div class="relative mb-base aspect-[3/1] overflow-hidden rounded">
+          <img
+            src="{{ collection.image | image_url: width: 2000 }}"
+            alt="{{ collection.image.alt | default: collection.title | escape }}"
+            width="{{ collection.image.width }}"
+            height="{{ collection.image.height }}"
+            loading="eager"
+            class="h-full w-full object-cover"
+          >
+        </div>
+      {% endif %}
 
-<div class="collection-products">
-  {% paginate collection.products by 20 %}
-    {% for product in collection.products %}
-      <div class="collection-product">
-        {% if product.featured_image %}
-          {% render 'image',
-            class: 'collection-product__image',
-            image: product.featured_image,
-            url: product.url,
-            width: 400,
-            height: 400,
-            crop: 'center'
-          %}
-        {% endif %}
-        <div class="collection-product__content">
-          <p>{{ product.title | escape | link_to: product.url }}</p>
-          <p>{{ product.price | money }}</p>
+      <h1 class="font-heading text-3xl font-semibold text-foreground">{{ collection.title }}</h1>
+
+      {% if collection.description != blank %}
+        <div class="mt-2 max-w-2xl text-foreground/60">{{ collection.description }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <collection-filters data-section-id="{{ section.id }}" class="block">
+    <div class="grid grid-cols-[var(--content-grid)] pb-base">
+      <div class="col-start-2">
+        {% assign active_value_count = 0 %}
+        {% for filter in collection.filters %}
+          {% assign active_value_count = active_value_count | plus: filter.active_values.size %}
+        {% endfor %}
+
+        <form method="get" action="{{ collection.url }}" class="mb-base flex items-center gap-base">
+          {% if collection.filters.size > 0 %}
+            <filters-drawer>
+              <button
+                type="button"
+                data-dialog-open
+                aria-haspopup="dialog"
+                aria-expanded="false"
+                aria-controls="FiltersDrawer-{{ section.id }}"
+                class="flex items-center gap-2 rounded border border-foreground/10 px-3 py-2 text-sm text-foreground [&_svg]:h-4 [&_svg]:w-4"
+              >
+                <span data-filter-trigger-content class="flex items-center gap-2">
+                  {{ 'icon-filter.svg' | inline_asset_content }}
+                  {{ 'products.filter' | t }}
+                  {% if active_value_count > 0 %}
+                    <span class="rounded-full bg-primary px-2 py-0.5 text-xs text-on-primary">{{ active_value_count }}</span>
+                  {% endif %}
+                </span>
+              </button>
+
+              <dialog
+                id="FiltersDrawer-{{ section.id }}"
+                aria-label="{{ 'products.filter' | t }}"
+                class="m-0 hidden h-full max-h-full w-full max-w-xs flex-col border-0 bg-background p-0 open:flex [&::backdrop]:bg-foreground/50"
+              >
+                <div class="flex items-center justify-between border-b border-foreground/10 p-base">
+                  <p class="font-heading font-semibold text-foreground">{{ 'products.filter' | t }}</p>
+                  <button type="button" data-dialog-close class="flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6">
+                    <span class="sr-only">{{ 'accessibility.close' | t }}</span>
+                    {{ 'icon-close.svg' | inline_asset_content }}
+                  </button>
+                </div>
+
+                <div data-filter-fields class="flex flex-1 flex-col overflow-hidden">
+                <div class="flex flex-1 flex-col gap-base overflow-y-auto p-base">
+                  <div data-sort-slot-mobile></div>
+
+                  {% for filter in collection.filters %}
+                    <fieldset class="border-t border-foreground/10 pt-2 first:border-t-0 first:pt-0">
+                      <legend class="mb-2 text-sm font-semibold text-foreground">{{ filter.label }}</legend>
+
+                      {% case filter.type %}
+                        {% when 'price_range' %}
+                          <div class="flex items-center gap-2">
+                            <label class="sr-only" for="FilterPriceMin-{{ section.id }}">{{ 'products.price_min' | t }}</label>
+                            <input
+                              type="number"
+                              id="FilterPriceMin-{{ section.id }}"
+                              name="{{ filter.min_value.param_name }}"
+                              value="{{ filter.min_value.value }}"
+                              placeholder="{{ filter.min_value.value | default: 0 }}"
+                              min="0"
+                              class="w-full rounded border border-foreground/10 bg-background px-2 py-1 text-sm text-foreground"
+                            >
+                            <span class="text-foreground/60">{{ 'products.price_range_separator' | t }}</span>
+                            <label class="sr-only" for="FilterPriceMax-{{ section.id }}">{{ 'products.price_max' | t }}</label>
+                            <input
+                              type="number"
+                              id="FilterPriceMax-{{ section.id }}"
+                              name="{{ filter.max_value.param_name }}"
+                              value="{{ filter.max_value.value }}"
+                              placeholder="{{ filter.max_value.value | default: filter.range_max }}"
+                              min="0"
+                              class="w-full rounded border border-foreground/10 bg-background px-2 py-1 text-sm text-foreground"
+                            >
+                          </div>
+                        {% when 'boolean' %}
+                          {% for value in filter.values %}
+                            <label class="flex items-center gap-2 py-1 text-sm text-foreground">
+                              <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %}>
+                              {{ value.label }}
+                            </label>
+                          {% endfor %}
+                        {% else %}
+                          {% for value in filter.values %}
+                            <label class="flex items-center gap-2 py-1 text-sm text-foreground {% if value.count == 0 and value.active == false %}opacity-50{% endif %}">
+                              <input
+                                type="checkbox"
+                                name="{{ filter.param_name }}"
+                                value="{{ value.value }}"
+                                {% if value.active %}checked{% endif %}
+                                {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                              >
+                              {{ value.label }} ({{ value.count }})
+                            </label>
+                          {% endfor %}
+                      {% endcase %}
+                    </fieldset>
+                  {% endfor %}
+                </div>
+
+                <div class="flex items-center justify-between gap-base border-t border-foreground/10 p-base">
+                  {% if active_value_count > 0 %}
+                    <a href="{{ collection.url }}" class="text-sm text-foreground/60 no-underline hover:text-primary" data-clear-filters>
+                      {{ 'products.clear_filters' | t }}
+                    </a>
+                  {% endif %}
+                  <button type="button" data-apply-filters data-dialog-close class="btn btn-primary ml-auto">
+                    {{ 'products.apply_filters' | t }}
+                  </button>
+                </div>
+                </div>
+              </dialog>
+            </filters-drawer>
+          {% endif %}
+
+          <div data-sort-control class="ml-auto flex items-center gap-base">
+            <p class="text-sm text-foreground/60" role="status">
+              {{ 'products.product_count' | t: count: collection.products_count }}
+            </p>
+            <div data-sort-slot-desktop>
+              <div data-sort-field>
+                <label class="flex items-center gap-2 text-sm text-foreground" for="SortBy-{{ section.id }}">
+                  {{ 'products.sort_by' | t }}
+                  <select
+                    id="SortBy-{{ section.id }}"
+                    name="sort_by"
+                    class="rounded border border-foreground/10 bg-background px-2 py-1 text-sm text-foreground"
+                  >
+                    {% for option in collection.sort_options %}
+                      <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>
+                        {{ option.name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div data-collection-results>
+          {% assign active_value_count = 0 %}
+          {% for filter in collection.filters %}
+            {% assign active_value_count = active_value_count | plus: filter.active_values.size %}
+          {% endfor %}
+
+          {% if active_value_count > 0 %}
+            <div class="mb-base flex flex-wrap items-center gap-2">
+              {% for filter in collection.filters %}
+                {% for value in filter.active_values %}
+                  <a
+                    href="{{ value.url_to_remove }}"
+                    class="flex items-center gap-1 rounded-full border border-foreground/10 px-3 py-1 text-sm text-foreground no-underline hover:border-primary"
+                    data-remove-filter
+                  >
+                    {{ value.label }}
+                    <span aria-hidden="true">&times;</span>
+                    {% assign filter_value_label = value.label | escape %}
+                    <span class="sr-only">{{ 'products.remove_filter' | t: label: filter_value_label }}</span>
+                  </a>
+                {% endfor %}
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          {% paginate collection.products by 24 %}
+            {% if collection.products.size > 0 %}
+              <ul role="list" class="grid grid-cols-2 gap-base md:grid-cols-3">
+                {% for product in collection.products %}
+                  <li>
+                    {% render 'product-card', product: product %}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p class="text-foreground/60">{{ 'products.no_results' | t }}</p>
+            {% endif %}
+
+            {% render 'pagination', paginate: paginate %}
+          {% endpaginate %}
         </div>
       </div>
-    {% endfor %}
-
-    {{ paginate | default_pagination }}
-  {% endpaginate %}
+    </div>
+  </collection-filters>
 </div>
 
-{% stylesheet %}
-  .collection-products {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-  }
-{% endstylesheet %}
+<script src="{{ 'collection.js' | asset_url }}" type="module"></script>
 
 {% schema %}
 {
   "name": "t:general.collection",
-  "settings": []
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_banner_image",
+      "label": "t:labels.show_banner_image",
+      "default": true
+    }
+  ]
 }
 {% endschema %}

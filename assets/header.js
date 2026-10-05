@@ -1,3 +1,5 @@
+import { DialogElement } from './dialog-element.js'
+
 class NavDropdown extends HTMLElement {
   connectedCallback() {
     this.trigger = this.querySelector('[data-dropdown-trigger]')
@@ -52,30 +54,6 @@ class LocalizationForm extends NavDropdown {
         this.input.value = link.dataset.value
         this.form.submit()
       })
-    })
-  }
-}
-
-class DialogElement extends HTMLElement {
-  connectedCallback() {
-    this.dialog = this.querySelector('dialog')
-    this.openButton = this.querySelector('[data-dialog-open]')
-    this.closeButton = this.querySelector('[data-dialog-close]')
-    if (!this.dialog || !this.openButton) return
-
-    this.openButton.addEventListener('click', () => {
-      this.dialog.showModal()
-      this.openButton.setAttribute('aria-expanded', 'true')
-      this.onOpen?.()
-    })
-    this.closeButton?.addEventListener('click', () => this.dialog.close())
-    this.dialog.addEventListener('click', (event) => {
-      if (event.target === this.dialog) this.dialog.close()
-    })
-    this.dialog.addEventListener('close', () => {
-      this.openButton.setAttribute('aria-expanded', 'false')
-      this.openButton.focus()
-      this.onClose?.()
     })
   }
 }
