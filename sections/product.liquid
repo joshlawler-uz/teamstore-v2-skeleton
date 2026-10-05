@@ -1,50 +1,126 @@
 {% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
+  Product page: media gallery, details, variant picker, buy buttons. Variant
+  switching (price, availability, gallery image, URL) is handled by
+  <product-form> (assets/product.js) reading a JSON blob of product.variants —
+  no AJAX fetch needed. Add to cart is a plain form POST to /cart (no cart
+  drawer yet to show an AJAX result in).
 {% endcomment %}
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
-</div>
+{% assign current_variant = product.selected_or_first_available_variant %}
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+<div class="color-{{ section.settings.color_scheme }} full-width">
+  <div class="grid grid-cols-[var(--content-grid)] py-base">
+    <div class="col-start-2 grid grid-cols-1 gap-base md:grid-cols-2">
+      {% render 'product-media', product: product %}
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+      <product-form data-section-id="{{ section.id }}">
+        <script type="application/json" data-product-variants>
+          {{ product.variants | json }}
+        </script>
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
+        <h1 class="font-heading text-3xl font-semibold text-foreground">{{ product.title }}</h1>
+
+        <p class="mt-2 text-xl text-foreground" data-product-price>
+          {% if current_variant.compare_at_price > current_variant.price %}
+            <span class="text-foreground/60 line-through">{{ current_variant.compare_at_price | money }}</span>
           {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+          {{ current_variant.price | money }}
+        </p>
 
-    <input type="text" name="quantity" min="1" value="1">
+        {% if product.description != blank %}
+          <div class="mt-base text-foreground/80">{{ product.description }}</div>
+        {% endif %}
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
+        {% form 'product', product, class: 'mt-base' %}
+          <select name="id" class="sr-only" aria-hidden="true" tabindex="-1" data-variant-select>
+            {% for variant in product.variants %}
+              <option value="{{ variant.id }}" {% if variant == current_variant %}selected{% endif %}>
+                {{ variant.title }}
+              </option>
+            {% endfor %}
+          </select>
+
+          {% for option in product.options_with_values %}
+            <fieldset class="mb-base">
+              <legend class="mb-2 text-sm font-semibold text-foreground">{{ option.name }}</legend>
+              <div class="flex flex-wrap gap-2">
+                {% for value in option.values %}
+                  <button
+                    type="button"
+                    data-option-value
+                    data-option-position="{{ option.position }}"
+                    data-value="{{ value | escape }}"
+                    aria-pressed="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+                    class="rounded border border-foreground/10 px-3 py-1 text-sm text-foreground [&[aria-pressed=true]]:border-primary [&[aria-pressed=true]]:bg-primary [&[aria-pressed=true]]:text-on-primary [&[data-sold-out]]:text-foreground/40 [&[data-sold-out]]:line-through"
+                  >
+                    {{ value }}
+                  </button>
+                {% endfor %}
+              </div>
+            </fieldset>
+          {% endfor %}
+
+          <div class="mb-base flex items-center gap-2">
+            <label class="sr-only" for="Quantity-{{ section.id }}">{{ 'products.quantity' | t }}</label>
+            <button type="button" data-quantity-decrease aria-label="{{ 'products.decrease_quantity' | t }}" class="flex h-9 w-9 items-center justify-center rounded border border-foreground/10 text-foreground">
+              &minus;
+            </button>
+            <input
+              type="number"
+              id="Quantity-{{ section.id }}"
+              name="quantity"
+              value="1"
+              min="1"
+              class="h-9 w-14 rounded border border-foreground/10 bg-background text-center text-foreground"
+            >
+            <button type="button" data-quantity-increase aria-label="{{ 'products.increase_quantity' | t }}" class="flex h-9 w-9 items-center justify-center rounded border border-foreground/10 text-foreground">
+              +
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            name="add"
+            class="btn btn-primary w-full"
+            data-add-to-cart
+            data-in-stock-text="{{ 'products.add_to_cart' | t }}"
+            data-sold-out-text="{{ 'products.sold_out' | t }}"
+            {% unless current_variant.available %}disabled{% endunless %}
+          >
+            <span data-add-to-cart-text>
+              {% if current_variant.available %}
+                {{ 'products.add_to_cart' | t }}
+              {% else %}
+                {{ 'products.sold_out' | t }}
+              {% endif %}
+            </span>
+          </button>
+        {% endform %}
+
+        {% content_for 'blocks' %}
+      </product-form>
+    </div>
+  </div>
 </div>
+
+<script src="{{ 'product.js' | asset_url }}" type="module"></script>
 
 {% schema %}
 {
   "name": "t:general.product",
-  "settings": [],
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
   "disabled_on": {
     "groups": ["header", "footer"]
   }

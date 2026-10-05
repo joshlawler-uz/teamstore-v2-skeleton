@@ -1,0 +1,56 @@
+{% doc %}
+  Renders the product's main image with a thumbnail row. Thumbnail clicks swap
+  the main image via assets/product.js's ProductGallery — plain images only,
+  video/3D media deferred.
+
+  @param {product} product - The product whose images to render
+
+  @example
+  {% render 'product-media', product: product %}
+{% enddoc %}
+
+{% if product.featured_image %}
+  <product-gallery class="block">
+    <div class="relative aspect-square overflow-hidden rounded bg-background">
+      <img
+        src="{{ product.featured_image | image_url: width: 1200 }}"
+        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+        width="{{ product.featured_image.width }}"
+        height="{{ product.featured_image.height }}"
+        loading="eager"
+        fetchpriority="high"
+        class="h-full w-full object-cover"
+        data-gallery-main
+      >
+    </div>
+
+    {% if product.images.size > 1 %}
+      <ul role="list" class="mt-2 grid grid-cols-5 gap-2">
+        {% for image in product.images %}
+          <li>
+            <button
+              type="button"
+              aria-label="{{ 'products.show_image' | t: index: forloop.index }}"
+              aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+              data-gallery-thumb
+              data-full-src="{{ image | image_url: width: 1200 }}"
+              data-alt="{{ image.alt | default: product.title | escape }}"
+              class="block aspect-square overflow-hidden rounded border border-foreground/10 [&[aria-current=true]]:border-primary"
+            >
+              <img
+                src="{{ image | image_url: width: 200 }}"
+                alt=""
+                width="200"
+                height="200"
+                loading="lazy"
+                class="h-full w-full object-cover"
+              >
+            </button>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </product-gallery>
+{% else %}
+  {{ 'product-apparel-1' | placeholder_svg_tag: 'aspect-square w-full rounded bg-background' }}
+{% endif %}

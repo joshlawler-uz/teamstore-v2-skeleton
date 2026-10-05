@@ -69,7 +69,12 @@
     "product_count": {
       "one": "{{ count }} product",
       "other": "{{ count }} products"
-    }
+    },
+    "add_to_cart": "Add to cart",
+    "quantity": "Quantity",
+    "decrease_quantity": "Decrease quantity",
+    "increase_quantity": "Increase quantity",
+    "show_image": "Show image {{ index }}"
   },
   "search": {
     "title": "Search",
