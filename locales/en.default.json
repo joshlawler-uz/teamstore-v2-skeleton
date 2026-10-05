@@ -4,7 +4,11 @@
     "header_navigation": "Main navigation",
     "cart": "Cart",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {{ page }}"
   },
   "404": {
     "title": "404",
@@ -52,7 +56,20 @@
   "products": {
     "sold_out": "Sold out",
     "from_price_html": "From {{ price }}",
-    "view_all": "Shop all"
+    "view_all": "Shop all",
+    "filter": "Filter",
+    "clear_filters": "Clear all",
+    "apply_filters": "Apply",
+    "remove_filter": "Remove {{ label }} filter",
+    "sort_by": "Sort by",
+    "price_min": "From price",
+    "price_max": "To price",
+    "price_range_separator": "to",
+    "no_results": "No products found.",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    }
   },
   "search": {
     "title": "Search",
