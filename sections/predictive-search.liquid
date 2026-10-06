@@ -14,7 +14,7 @@
         {%- for product in predictive_search.resources.products -%}
           <li role="option">
             <a href="{{ product.url }}" class="flex items-center gap-base text-foreground no-underline hover:text-primary">
-              {% render 'image', image: product.featured_media.preview_image, width: 60, height: 60, crop: 'center', class: 'w-15' %}
+              {% render 'image', image: product.featured_media.preview_image, width: 180, height: 180, crop: 'center', class: 'w-15' %}
               <span>
                 {{ product.title }}
                 <span class="block text-sm text-foreground/60">{{ product.price | money }}</span>
