@@ -27,8 +27,14 @@
   "cart": {
     "checkout": "Checkout",
     "title": "Cart",
-    "update": "Update",
-    "remove": "Remove"
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "empty": "Your cart is empty.",
+    "continue_shopping": "Continue shopping",
+    "count_status": {
+      "one": "{{ count }} item in cart",
+      "other": "{{ count }} items in cart"
+    }
   },
   "customers": {
     "login": {

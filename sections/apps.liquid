@@ -1,0 +1,25 @@
+{% comment %}
+  Generic catch-all a merchant can drop anywhere purely to host app blocks —
+  no settings, no layout opinions of its own. See CLAUDE.md's "Building for
+  app compatibility" section.
+{% endcomment %}
+
+{% for block in section.blocks %}
+  {% render block %}
+{% endfor %}
+
+{% schema %}
+{
+  "name": "t:general.apps",
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.apps"
+    }
+  ]
+}
+{% endschema %}

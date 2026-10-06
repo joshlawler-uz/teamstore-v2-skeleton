@@ -40,24 +40,44 @@
           </shopify-account>
         {% endif %}
 
-        <a
-          href="{{ routes.cart_url }}"
-          class="relative flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6"
-          aria-label="{{ 'accessibility.cart' | t }}: {{ cart.item_count }}"
-        >
-          {{ 'icon-cart.svg' | inline_asset_content }}
-          <span
-            class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-none text-background {% unless cart.item_count > 0 %}hidden{% endunless %}"
+        <cart-drawer>
+          <a
+            href="{{ routes.cart_url }}"
+            data-dialog-open
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-controls="CartDrawer-{{ section.id }}"
+            class="relative flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6"
+            aria-label="{{ 'accessibility.cart' | t }}: {{ cart.item_count }}"
           >
-            {{ cart.item_count }}
+            {{ 'icon-cart.svg' | inline_asset_content }}
+            <span
+              data-cart-count
+              class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] leading-none text-background {% unless cart.item_count > 0 %}hidden{% endunless %}"
+            >
+              {{ cart.item_count }}
+            </span>
+          </a>
+
+          <span class="sr-only" role="status" data-cart-count-status>
+            {{ 'cart.count_status' | t: count: cart.item_count }}
           </span>
-        </a>
+
+          <dialog
+            id="CartDrawer-{{ section.id }}"
+            aria-label="{{ 'cart.title' | t }}"
+            class="m-0 inset-y-0 left-auto hidden h-full max-h-full w-[90%] flex-col border-0 bg-background p-0 open:flex md:w-full md:max-w-md [&::backdrop]:bg-foreground/50"
+          >
+            {% render 'cart-drawer' %}
+          </dialog>
+        </cart-drawer>
       </div>
     </div>
   </div>
 </header>
 
 <script src="{{ 'header.js' | asset_url }}" type="module"></script>
+<script src="{{ 'cart.js' | asset_url }}" type="module"></script>
 
 {% schema %}
 {

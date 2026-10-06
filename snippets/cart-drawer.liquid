@@ -1,0 +1,101 @@
+{% doc %}
+  Renders the cart drawer's contents: title with item count, line items, and
+  the summary (subtotal + checkout). Re-rendered via the Section Rendering API
+  (assets/cart.js fetches `?sections=header`) after every AJAX cart mutation,
+  so this whole block is wrapped in one marker the JS can swap in one go.
+
+  @example
+  {% render 'cart-drawer' %}
+{% enddoc %}
+
+<div data-cart-drawer-content class="flex h-full flex-col">
+  <div class="flex items-center justify-between border-b border-foreground/10 p-base">
+    <p class="font-heading font-semibold text-foreground">
+      {{ 'cart.title' | t }} ({{ cart.item_count }})
+    </p>
+    <button type="button" data-dialog-close class="flex items-center text-foreground [&_svg]:h-6 [&_svg]:w-6">
+      <span class="sr-only">{{ 'accessibility.close' | t }}</span>
+      {{ 'icon-close.svg' | inline_asset_content }}
+    </button>
+  </div>
+
+  {% if cart.item_count > 0 %}
+    <ul role="list" class="flex flex-1 flex-col gap-base overflow-y-auto overflow-x-hidden p-base">
+      {% for item in cart.items %}
+        <li class="flex gap-base">
+          <a href="{{ item.url }}" class="block h-20 w-20 shrink-0 overflow-hidden rounded bg-background">
+            {% if item.image %}
+              <img
+                src="{{ item.image | image_url: width: 160 }}"
+                alt="{{ item.image.alt | default: item.product_title | escape }}"
+                width="80"
+                height="80"
+                loading="lazy"
+                class="h-full w-full object-cover"
+              >
+            {% endif %}
+          </a>
+
+          <div class="flex min-w-0 flex-1 flex-col">
+            <a href="{{ item.url }}" class="truncate text-sm text-foreground no-underline hover:text-primary">
+              {{ item.product_title }}
+            </a>
+            {% unless item.product.has_only_default_variant %}
+              <p class="text-sm text-foreground/60">{{ item.variant.title }}</p>
+            {% endunless %}
+
+            <div class="mt-2 flex items-center gap-2">
+              <button
+                type="button"
+                data-cart-quantity-decrease
+                data-line-key="{{ item.key }}"
+                aria-label="{{ 'products.decrease_quantity' | t }}"
+                class="flex h-7 w-7 items-center justify-center rounded border border-foreground/10 text-foreground"
+              >
+                &minus;
+              </button>
+              <span data-cart-quantity class="w-6 text-center text-sm text-foreground">{{ item.quantity }}</span>
+              <button
+                type="button"
+                data-cart-quantity-increase
+                data-line-key="{{ item.key }}"
+                aria-label="{{ 'products.increase_quantity' | t }}"
+                class="flex h-7 w-7 items-center justify-center rounded border border-foreground/10 text-foreground"
+              >
+                +
+              </button>
+
+              <button
+                type="button"
+                data-cart-remove
+                data-line-key="{{ item.key }}"
+                class="ml-auto text-sm text-foreground/60 no-underline hover:text-primary"
+              >
+                {{ 'cart.remove' | t }}
+              </button>
+            </div>
+          </div>
+
+          <p class="shrink-0 text-sm text-foreground">{{ item.final_line_price | money }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="border-t border-foreground/10 p-base">
+      <div class="mb-base flex items-center justify-between text-foreground">
+        <p class="font-semibold">{{ 'cart.subtotal' | t }}</p>
+        <p class="font-semibold">{{ cart.total_price | money }}</p>
+      </div>
+      <a href="{{ routes.cart_url }}/checkout" class="btn btn-primary w-full">
+        {{ 'cart.checkout' | t }}
+      </a>
+    </div>
+  {% else %}
+    <div class="flex flex-1 flex-col items-center justify-center gap-base p-base text-center">
+      <p class="text-foreground/60">{{ 'cart.empty' | t }}</p>
+      <a href="{{ routes.all_products_collection_url }}" class="btn btn-primary">
+        {{ 'cart.continue_shopping' | t }}
+      </a>
+    </div>
+  {% endif %}
+</div>

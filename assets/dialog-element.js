@@ -7,7 +7,10 @@ export class DialogElement extends HTMLElement {
     this.openButton = this.querySelector('[data-dialog-open]')
     if (!this.dialog || !this.openButton) return
 
-    this.openButton.addEventListener('click', () => {
+    // preventDefault so the open trigger can be a real <a href="/cart">-style
+    // link (working without JS) rather than requiring a plain <button>.
+    this.openButton.addEventListener('click', (event) => {
+      event.preventDefault()
       this.dialog.showModal()
       this.openButton.setAttribute('aria-expanded', 'true')
       this.onOpen?.()
