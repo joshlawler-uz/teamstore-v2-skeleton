@@ -1,70 +1,88 @@
 {% comment %}
-  This section is used in the search template to render search results for
-  products, articles, and pages.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/search
+  Full /search results page: input header, results grid (reusing the same
+  product-card as collection pages), and a no-results state. Results can be
+  products, articles, or pages — only products get the rich product-card;
+  article/page results get a simpler title-only link card.
 {% endcomment %}
 
-<h1>{{ 'search.title' | t }}</h1>
+<div class="color-{{ section.settings.color_scheme }} full-width">
+  <div class="grid grid-cols-[var(--content-grid)] py-base">
+    <div class="col-start-2">
+      <h1 class="font-heading text-3xl font-semibold text-foreground">{{ 'search.title' | t }}</h1>
 
-<form action="{{ routes.search_url }}" method="get" role="search">
-  <input
-    type="search"
-    size="50"
-    name="q"
-    value="{{ search.terms | escape }}"
-    placeholder="{{ 'search.placeholder' | t }}"
-  >
-  <button type="submit">{{ 'search.submit' | t }}</button>
-</form>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="mt-base flex items-center gap-base">
+        <label for="SearchInput" class="sr-only">{{ 'search.placeholder' | t }}</label>
+        <input
+          id="SearchInput"
+          type="search"
+          name="q"
+          value="{{ search.terms | escape }}"
+          placeholder="{{ 'search.placeholder' | t }}"
+          class="flex-1 border border-foreground/10 bg-background px-base py-2 text-foreground"
+        >
+        <button type="submit" class="btn btn-primary">{{ 'search.submit' | t }}</button>
+      </form>
 
-{% if search.performed %}
-  {% if search.results_count == 0 %}
-    <p>{{ 'search.no_results_html' | t: terms: search.terms }}</p>
-  {% else %}
-    <p>{{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}</p>
-
-    <div class="search-results">
-      {% paginate search.results by 20 %}
-        {% # Search result items may be an article, a page, or a product. %}
-        {% for result in search.results %}
-          <div class="search-result">
-            {% assign featured_image = result.featured_image | default: result.image %}
-            {% if featured_image %}
-              {% render 'image', class: 'search-result__image', image: featured_image, url: result.url, width: 400 %}
-            {% endif %}
-            <div class="search-result__content">
-              <p>
-                {{ result.title | link_to: result.url }}
-                {% if result.price %}
-                  {{ result.price | money_with_currency }}
-                {% endif %}
-              </p>
-            </div>
+      {% if search.performed %}
+        {% if search.results_count == 0 %}
+          <div class="mt-base flex flex-col items-start gap-2">
+            <p class="text-foreground/60">{{ 'search.no_results_html' | t: terms: search.terms }}</p>
+            <a href="{{ routes.all_products_collection_url }}" class="text-foreground no-underline hover:text-primary">
+              {{ 'search.continue_shopping' | t }}
+            </a>
           </div>
-        {% endfor %}
+        {% else %}
+          <p class="mt-base text-sm text-foreground/60" role="status">
+            {{ 'search.results_for_html' | t: terms: search.terms, count: search.results_count }}
+          </p>
 
-        {{ paginate | default_pagination }}
-      {% endpaginate %}
+          {% paginate search.results by 24 %}
+            <ul role="list" class="mt-base grid grid-cols-2 gap-base md:grid-cols-3">
+              {% for result in search.results %}
+                <li>
+                  {% if result.object_type == 'product' %}
+                    {% render 'product-card', product: result %}
+                  {% else %}
+                    <a href="{{ result.url }}" class="group block text-foreground no-underline">
+                      <div class="flex flex-col gap-2">
+                        {% if result.featured_image %}
+                          <div class="relative aspect-square overflow-hidden rounded bg-background">
+                            <img
+                              src="{{ result.featured_image | image_url: width: 600 }}"
+                              alt="{{ result.featured_image.alt | default: result.title | escape }}"
+                              width="{{ result.featured_image.width }}"
+                              height="{{ result.featured_image.height }}"
+                              loading="lazy"
+                              class="h-full w-full object-cover transition-opacity group-hover:opacity-80"
+                            >
+                          </div>
+                        {% endif %}
+                        <p class="text-sm text-foreground">{{ result.title }}</p>
+                      </div>
+                    </a>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+
+            {% render 'pagination', paginate: paginate %}
+          {% endpaginate %}
+        {% endif %}
+      {% endif %}
     </div>
-  {% endif %}
-{% endif %}
-
-{% stylesheet %}
-  .search-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  }
-  .search-results .prev,
-  .search-results .page,
-  .search-results .next {
-    grid-column: 1 / -1;
-  }
-{% endstylesheet %}
+  </div>
+</div>
 
 {% schema %}
 {
   "name": "t:general.search",
-  "settings": []
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    }
+  ]
 }
 {% endschema %}
