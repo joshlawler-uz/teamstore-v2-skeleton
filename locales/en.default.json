@@ -13,7 +13,7 @@
   "404": {
     "title": "404",
     "not_found": "Page not found.",
-    "back_to_shopping": "Back to shopping"
+    "back_to_home": "Back to home"
   },
   "blog": {
     "article_comments": "Comments",
@@ -55,9 +55,10 @@
     "use_at_checkout": "Use this gift card at checkout"
   },
   "password": {
-    "title": "This shop is private",
     "password": "Password",
-    "enter": "Enter"
+    "password_prompt": "Enter the store password to continue",
+    "enter": "Enter",
+    "powered_by": "Powered by Shopify"
   },
   "products": {
     "sold_out": "Sold out",

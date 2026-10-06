@@ -1,23 +1,32 @@
 {% comment %}
-  This section is used in the 404 template to render page shown when customers
-  enter an invalid store URL.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
+  Minimal "page not found" message shown when customers enter an invalid
+  store URL, with a clear link back to shopping.
 {% endcomment %}
 
-<h1>{{ '404.title' | t }}</h1>
+<div class="color-{{ section.settings.color_scheme }} full-width">
+  <div class="grid grid-cols-[var(--content-grid)] py-base">
+    <div class="col-start-2 flex min-h-[28rem] flex-col items-center justify-center gap-base text-center">
+      <h1 class="font-heading text-3xl font-semibold text-foreground">{{ '404.title' | t }}</h1>
 
-<p>
-  {{ '404.not_found' | t }}
-</p>
+      <p class="text-foreground/60">{{ '404.not_found' | t }}</p>
 
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+      <a href="{{ routes.root_url }}" class="btn btn-primary">
+        {{ '404.back_to_home' | t }}
+      </a>
+    </div>
+  </div>
+</div>
 
 {% schema %}
 {
   "name": "t:general.404",
-  "settings": []
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    }
+  ]
 }
 {% endschema %}
