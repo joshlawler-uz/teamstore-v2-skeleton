@@ -211,6 +211,8 @@
       </div>
     </div>
   </collection-filters>
+
+  {% content_for 'blocks' %}
 </div>
 
 <script src="{{ 'collection.js' | asset_url }}" type="module"></script>
@@ -230,6 +232,11 @@
       "id": "show_banner_image",
       "label": "t:labels.show_banner_image",
       "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
     }
   ]
 }

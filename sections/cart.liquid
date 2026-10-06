@@ -1,37 +1,106 @@
 {% comment %}
-  This section is used in the cart template to render /cart page with an
-  overview of the items in customer's cart.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/cart
+  Full /cart page. The drawer (snippets/cart-drawer.liquid, assets/cart.js) is
+  the primary flow now, so this page is the fallback: direct navigation,
+  JavaScript disabled, bookmarks, search engines. Deliberately uses a real
+  <form>/updates[] rather than the drawer's JS-only stepper buttons, so
+  quantity changes work with zero JavaScript — no separate Update button
+  (matches Focal's classic cart form): Checkout submits pending updates[]
+  and proceeds to checkout in one POST with no JS, and assets/cart.js
+  auto-submits on change for JS users without checking out.
 {% endcomment %}
 
-<h1>{{ 'cart.title' | t }}</h1>
+<div class="color-{{ section.settings.color_scheme }} full-width">
+  <div class="grid grid-cols-[var(--content-grid)] py-base">
+    <div class="col-start-2">
+      <h1 class="mb-base font-heading text-3xl font-semibold text-foreground">{{ 'cart.title' | t }}</h1>
 
-<form action="{{ routes.cart_url }}" method="post">
-  <table>
-    {% for item in cart.items %}
-      <tr>
-        <td>
-          {% render 'image', image: item.image, url: item.url %}
-        </td>
-        <td>
-          <p>{{ item.product.title }}</p>
-          {{ 'cart.remove' | t | link_to: item.url_to_remove }}
-        </td>
-        <td>
-          <input type="text" name="updates[]" value="{{ item.quantity }}">
-          <input type="submit" value="{{ 'cart.update' | t }}">
-        </td>
-      </tr>
-    {% endfor %}
-  </table>
+      {% if cart.item_count > 0 %}
+        <form action="{{ routes.cart_url }}" method="post">
+          <ul role="list" class="flex flex-col gap-base">
+            {% for item in cart.items %}
+              <li class="flex gap-base border-b border-foreground/10 pb-base">
+                <a href="{{ item.url }}" class="block h-24 w-24 shrink-0 overflow-hidden rounded bg-background">
+                  {% if item.image %}
+                    <img
+                      src="{{ item.image | image_url: width: 200 }}"
+                      alt="{{ item.image.alt | default: item.product_title | escape }}"
+                      width="100"
+                      height="100"
+                      loading="lazy"
+                      class="h-full w-full object-cover"
+                    >
+                  {% endif %}
+                </a>
 
-  <input type="submit" name="checkout" value="{{ 'cart.checkout' | t }}">
-</form>
+                <div class="flex min-w-0 flex-1 flex-col">
+                  <a href="{{ item.url }}" class="text-foreground no-underline hover:text-primary">
+                    {{ item.product_title }}
+                  </a>
+                  {% unless item.product.has_only_default_variant %}
+                    <p class="text-sm text-foreground/60">{{ item.variant.title }}</p>
+                  {% endunless %}
+
+                  <div class="mt-2 flex items-center gap-base">
+                    <label class="sr-only" for="Updates-{{ forloop.index0 }}">{{ 'products.quantity' | t }}</label>
+                    <input
+                      type="number"
+                      id="Updates-{{ forloop.index0 }}"
+                      name="updates[]"
+                      value="{{ item.quantity }}"
+                      min="0"
+                      class="h-9 w-16 rounded border border-foreground/10 bg-background text-center text-foreground"
+                    >
+                    <a href="{{ item.url_to_remove }}" class="text-sm text-foreground/60 no-underline hover:text-primary">
+                      {{ 'cart.remove' | t }}
+                    </a>
+                  </div>
+                </div>
+
+                <p class="shrink-0 text-foreground">{{ item.final_line_price | money }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+
+          <div class="mt-base flex flex-col items-end gap-base">
+            <div class="flex items-center gap-base text-lg text-foreground">
+              <p class="font-semibold">{{ 'cart.subtotal' | t }}</p>
+              <p class="font-semibold">{{ cart.total_price | money }}</p>
+            </div>
+
+            <button type="submit" name="checkout" class="btn btn-primary w-full md:w-auto">
+              {{ 'cart.checkout' | t }}
+            </button>
+          </div>
+        </form>
+      {% else %}
+        <div class="flex flex-col items-center gap-base py-base text-center">
+          <p class="text-foreground/60">{{ 'cart.empty' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn-primary">
+            {{ 'cart.continue_shopping' | t }}
+          </a>
+        </div>
+      {% endif %}
+
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+</div>
 
 {% schema %}
 {
   "name": "t:general.cart",
-  "settings": []
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:labels.color_scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ]
 }
 {% endschema %}
