@@ -57,7 +57,9 @@
   "password": {
     "title": "This shop is private",
     "password": "Password",
-    "enter": "Enter"
+    "enter": "Enter",
+    "powered_by": "Powered by Shopify",
+    "store_owner_link_html": "Are you the store owner? <a href=\"{{ link }}\">Log in here</a>"
   },
   "products": {
     "sold_out": "Sold out",
