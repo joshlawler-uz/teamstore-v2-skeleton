@@ -83,7 +83,8 @@
     "youtube": "YouTube"
   },
   "info": {
-    "image_mobile": "Optional. Shown instead of the image above on screens narrower than 768px."
+    "image_mobile": "Optional. Shown instead of the image above on screens narrower than 768px.",
+    "password_heading": "Edit this to suit the situation — e.g. a pre-launch gate (\"We'll be back soon\") or a temporary closure (\"We're updating our store\"). The message below it comes from Settings → Online Store → Preferences."
   },
   "options": {
     "alignment": {

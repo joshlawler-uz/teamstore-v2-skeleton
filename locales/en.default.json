@@ -55,8 +55,8 @@
     "use_at_checkout": "Use this gift card at checkout"
   },
   "password": {
-    "title": "This shop is private",
     "password": "Password",
+    "password_prompt": "Enter the store password to continue",
     "enter": "Enter",
     "powered_by": "Powered by Shopify"
   },
