@@ -43,15 +43,22 @@
                   {% if result.object_type == 'product' %}
                     {% render 'product-card', product: result %}
                   {% else %}
+                    {% assign result_image = result.featured_image | default: result.image %}
                     <a href="{{ result.url }}" class="group block text-foreground no-underline">
                       <div class="flex flex-col gap-2">
-                        {% if result.featured_image %}
+                        {% if result_image != blank %}
                           <div class="relative aspect-square overflow-hidden rounded bg-background">
                             <img
-                              src="{{ result.featured_image | image_url: width: 600 }}"
-                              alt="{{ result.featured_image.alt | default: result.title | escape }}"
-                              width="{{ result.featured_image.width }}"
-                              height="{{ result.featured_image.height }}"
+                              src="{{ result_image | image_url: width: 600 }}"
+                              srcset="
+                                {{ result_image | image_url: width: 300 }} 300w,
+                                {{ result_image | image_url: width: 600 }} 600w,
+                                {{ result_image | image_url: width: 900 }} 900w
+                              "
+                              sizes="(min-width: 768px) 25vw, 50vw"
+                              alt="{{ result_image.alt | default: result.title | escape }}"
+                              width="{{ result_image.width }}"
+                              height="{{ result_image.height }}"
                               loading="lazy"
                               class="h-full w-full object-cover transition-opacity group-hover:opacity-80"
                             >
