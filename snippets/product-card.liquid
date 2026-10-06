@@ -20,7 +20,7 @@
 <a href="{{ product.url }}" class="group block text-foreground no-underline">
   <div class="flex flex-col">
     <div class="relative aspect-square overflow-hidden rounded bg-background">
-      {% if product.featured_image %}
+      {% if product.featured_image != blank %}
         <img
           src="{{ product.featured_image | image_url: width: 600 }}"
           srcset="
